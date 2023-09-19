@@ -7,4 +7,5 @@ export interface UserDTO {
     email: string
     password: string
     budget: BudgetDTO
+    token: string
 }

@@ -12,7 +12,7 @@ const SignUp = () => {
     const onFinish = async (value: UserDTO) => {
         const response = await fetchData({
             method: 'POST',
-            url: '/users',
+            url: '/users/signup',
             data: value,
         })
 
