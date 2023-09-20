@@ -1,15 +1,16 @@
 import { requiredMessage } from '@helpers/Constants.utils'
 import { useApi } from '@hooks/useApi'
-import useStorage from '@hooks/useStorage'
+import useUser from '@hooks/useUser'
 import PublicLayout from '@layout/PublicLayout'
 import { UserDTO } from '@root/interfaces/UserDTO'
 import { Button, Form, Input, message } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const SignIn = () => {
     const [stateFetch, fetchData] = useApi<UserDTO>()
-    const [, setStorage] = useStorage()
     const [form] = Form.useForm()
+    const navigate = useNavigate()
+    const { methods } = useUser()
 
     const onFinish = async (value: { email: string; password: string }) => {
         const response = await fetchData({
@@ -20,7 +21,9 @@ const SignIn = () => {
 
         if (response.ok) {
             message.success('Se inicio sesión correctamente')
-            setStorage('token', response.data?.token)
+            localStorage.setItem('token', response.data?.token || '')
+            methods.onLogin(response.data)
+            navigate('/')
             return
         }
 

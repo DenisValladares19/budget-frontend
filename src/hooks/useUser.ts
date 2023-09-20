@@ -1,12 +1,10 @@
 import { UserContext } from '@contexts/UserContext'
 import { UserDTO } from '@root/interfaces/UserDTO'
 import { useContext } from 'react'
-import useStorage from './useStorage'
 import { useNavigate } from 'react-router-dom'
 
 const useUser = () => {
     const { dispatch, state } = useContext(UserContext)
-    const [, , deleteItem] = useStorage()
     const navigate = useNavigate()
 
     const onLogin = (data: UserDTO | null) => {
@@ -15,7 +13,7 @@ const useUser = () => {
 
     const onLogout = () => {
         dispatch({ type: 'LOGOUT' })
-        deleteItem('token')
+        localStorage.removeItem('token')
         navigate('/signin')
     }
 

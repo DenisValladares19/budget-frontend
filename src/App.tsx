@@ -1,21 +1,24 @@
 import { useRoutes } from 'react-router-dom'
 import { privateRoute, publicRoutes } from './routes'
-import useStorage from '@hooks/useStorage'
 import { useApi } from '@hooks/useApi'
 import { UserDTO } from './interfaces/UserDTO'
 import LoadingFullScreen from '@components/LoadingFullScreen'
 import { useEffect } from 'react'
 import useUser from '@hooks/useUser'
+import { PREFIX_STORAGE } from '@helpers/Constants.utils'
 
 function App() {
     const publicRoute = useRoutes(publicRoutes)
     const mainRoute = useRoutes(privateRoute)
-    const [token] = useStorage<string>('token')
+    const token = localStorage.getItem(PREFIX_STORAGE + 'token')
     const [stateUser, fetchUser] = useApi<UserDTO>()
     const { userData, methods } = useUser()
 
     useEffect(() => {
-        if (!userData.data && token) {
+        console.log(!userData.data && Boolean(token))
+        console.log(!userData.data, Boolean(token))
+
+        if (!userData.data && Boolean(token)) {
             fetchUser({
                 method: 'GET',
                 url: '/users/info',
@@ -26,7 +29,7 @@ function App() {
         }
     }, [token])
 
-    if (stateUser.isLoading || !token) {
+    if (stateUser.isLoading) {
         return <LoadingFullScreen />
     }
 

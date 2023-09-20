@@ -7,7 +7,8 @@ import {
 } from '@root/interfaces/API'
 import { fetchReducer } from '@root/reducers/fetchReducer'
 import { useReducer } from 'react'
-import useStorage from './useStorage'
+import axios, { AxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export function useApi<T = unknown>(): TypeReturnHook<T> {
     const initialState: StateFetch<T> = {
@@ -20,24 +21,22 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
     }
 
     const [state, dispatch] = useReducer(fetchReducer<T>, initialState)
-    const [token] = useStorage<string>('token')
+    const token = localStorage.getItem('token')
+    const navigate = useNavigate()
 
     async function request<M = unknown>(config: ConfigFetch<M>) {
         const baseUrl = `${BASE_URL}${config.url}${getParams(config.params)}`
         dispatch({ type: 'INIT' })
         try {
-            const response = await fetch(baseUrl, {
+            const response = await axios(baseUrl, {
                 method: config.method,
-                body:
-                    config.method !== 'GET'
-                        ? JSON.stringify(config.data)
-                        : undefined,
-                headers: getHeader(token),
+                data: config.method !== 'GET' ? config.data : undefined,
+                headers: Object.fromEntries(getHeader(token)),
             })
 
-            const result: ResponseDTO<T> = await response.json()
+            const result: ResponseDTO<T> = await response.data
 
-            if (response.ok) {
+            if (response.status === 200) {
                 dispatch({
                     type: 'SUCCESS',
                     payload: {
@@ -71,6 +70,20 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
         } catch (error) {
             console.log('[Error useApi]', error)
             dispatch({ type: 'ERROR', payload: { code: '', message: '' } })
+
+            if (error instanceof AxiosError) {
+                if (error.response && error.response.status === 403) {
+                    localStorage.removeItem('token')
+                    navigate('/signin')
+                }
+
+                return {
+                    ok: false,
+                    data: null,
+                    message: '',
+                    code: error.response?.status?.toString() || '',
+                }
+            }
             return {
                 ok: false,
                 data: null,
@@ -85,7 +98,7 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
         return '?' + new URLSearchParams(obj).toString()
     }
 
-    const getHeader = (token?: string): Headers => {
+    const getHeader = (token: string | null): Headers => {
         const headers = new Headers()
         headers.append('Content-Type', 'application/json')
         if (token) {
