@@ -5,12 +5,15 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import esES from 'antd/locale/es_ES'
+import StorageProvider from '@contexts/StorageContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <ConfigProvider locale={esES}>
             <BrowserRouter>
-                <App />
+                <StorageProvider>
+                    <App />
+                </StorageProvider>
             </BrowserRouter>
         </ConfigProvider>
     </React.StrictMode>
