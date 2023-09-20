@@ -7,5 +7,5 @@ export interface StateUser {
 
 export type ActionUser =
     | { type: 'LOGOUT' }
-    | { type: 'LOGIN'; payload: { data: UserDTO } }
-    | { type: 'UPDATE'; payload: { data: UserDTO } }
+    | { type: 'LOGIN'; payload: { data: UserDTO | null } }
+    | { type: 'UPDATE'; payload: { data: UserDTO | null } }

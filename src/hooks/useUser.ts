@@ -9,7 +9,7 @@ const useUser = () => {
     const [, , deleteItem] = useStorage()
     const navigate = useNavigate()
 
-    const onLogin = (data: UserDTO) => {
+    const onLogin = (data: UserDTO | null) => {
         dispatch({ type: 'LOGIN', payload: { data } })
     }
 
@@ -19,7 +19,7 @@ const useUser = () => {
         navigate('/signin')
     }
 
-    const onUpdate = (data: UserDTO) => {
+    const onUpdate = (data: UserDTO | null) => {
         dispatch({ type: 'UPDATE', payload: { data } })
     }
 
