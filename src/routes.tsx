@@ -9,4 +9,7 @@ export const publicRoutes = [
     { path: '*', element: <Navigate to={'/signin'} /> },
 ]
 
-export const privateRoute = [{ path: '/', element: <Home /> }]
+export const privateRoute = [
+    { path: '/', element: <Home /> },
+    { path: '*', element: <Navigate to={'/'} /> },
+]

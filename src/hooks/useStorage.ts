@@ -28,6 +28,7 @@ function useStorage<T = unknown>(key?: string): typeReturn<T> {
             result = [...result, { [k]: JSON.parse(val || '') }]
         })
 
+        if (JSON.stringify(result) === JSON.stringify(storage)) return
         setStorage(result || [])
     }
 
@@ -45,11 +46,13 @@ function useStorage<T = unknown>(key?: string): typeReturn<T> {
 
     useEffect(() => {
         if (!key) return
-        if (!storage) {
+        if (!storage || storage.length === 0) {
             load()
             return
         }
         const findKey = `${PREFIX_STORAGE}${key}`
+
+        console.log(findKey, storage)
 
         storage.forEach((s) => {
             const [key, data] = Object.entries(s)[0]

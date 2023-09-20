@@ -5,9 +5,11 @@ import useStorage from '@hooks/useStorage'
 function App() {
     const publicRoute = useRoutes(publicRoutes)
     const mainRoute = useRoutes(privateRoute)
-    const [token] = useStorage<string>()
+    const [token] = useStorage<string>('token')
 
-    return publicRoute
+    if (!token) return publicRoute
+
+    return mainRoute
 }
 
 export default App
