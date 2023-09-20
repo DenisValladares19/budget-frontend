@@ -6,9 +6,12 @@ import {
     ShoppingCartOutlined,
     UserOutlined,
 } from '@ant-design/icons'
+import useUser from '@hooks/useUser'
 import { Avatar, Dropdown, MenuProps } from 'antd'
 
 const Header = () => {
+    const { methods, userData } = useUser()
+
     const items: MenuProps = {
         items: [
             {
@@ -42,7 +45,7 @@ const Header = () => {
             {
                 key: '4',
                 label: (
-                    <a href="#" className="flex gap-2">
+                    <a className="flex gap-2">
                         <MobileOutlined />
                         Agregar recarga
                     </a>
@@ -52,13 +55,26 @@ const Header = () => {
             {
                 key: '5',
                 label: (
-                    <a href="#" className="flex gap-2">
+                    <a
+                        onClick={() => methods.onLogout()}
+                        className="flex gap-2"
+                    >
                         <LogoutOutlined />
                         Cerrar sesión
                     </a>
                 ),
             },
         ],
+    }
+
+    const getInitialLetters = (first?: string, second?: string): string => {
+        if (!first) return ''
+        if (!second) return first[0]?.toLocaleUpperCase()
+
+        const a = first[0]?.toLocaleUpperCase()
+        const b = second[0]?.toLocaleUpperCase()
+
+        return `${a}${b}`
     }
 
     return (
@@ -70,21 +86,26 @@ const Header = () => {
                     </span>
                 </div>
 
-                <div className="flex absolute right-5 top-0 text-white gap-3">
-                    <Dropdown menu={items} className="cursor-pointer">
-                        <div className="flex items-center gap-2 hover:bg-slate-600 h-[68px] pl-4 pr-2">
-                            <Avatar
-                                style={{
-                                    backgroundColor: '#fde3cf',
-                                    color: '#f56a00',
-                                }}
-                            >
-                                DV
-                            </Avatar>
-                            <CaretDownOutlined />
-                        </div>
-                    </Dropdown>
-                </div>
+                {userData.loggedIn && (
+                    <div className="flex absolute right-5 top-0 text-white gap-3">
+                        <Dropdown menu={items} className="cursor-pointer">
+                            <div className="flex items-center gap-2 hover:bg-slate-600 h-[68px] pl-4 pr-2">
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#fde3cf',
+                                        color: '#f56a00',
+                                    }}
+                                >
+                                    {getInitialLetters(
+                                        userData.data?.name,
+                                        userData.data?.lastName
+                                    )}
+                                </Avatar>
+                                <CaretDownOutlined />
+                            </div>
+                        </Dropdown>
+                    </div>
+                )}
             </div>
         </div>
     )
