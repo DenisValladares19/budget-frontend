@@ -72,7 +72,7 @@ const Header = () => {
 
                 <div className="flex absolute right-5 top-0 text-white gap-3">
                     <Dropdown menu={items} className="cursor-pointer">
-                        <div className="flex items-center gap-2 hover:bg-slate-500 h-[68px] px-4">
+                        <div className="flex items-center gap-2 hover:bg-slate-600 h-[68px] pl-4 pr-2">
                             <Avatar
                                 style={{
                                     backgroundColor: '#fde3cf',
