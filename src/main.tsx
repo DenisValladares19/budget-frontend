@@ -6,13 +6,16 @@ import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import esES from 'antd/locale/es_ES'
 import StorageProvider from '@contexts/StorageContext.tsx'
+import UserProvider from '@contexts/UserContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <ConfigProvider locale={esES}>
             <BrowserRouter>
                 <StorageProvider>
-                    <App />
+                    <UserProvider>
+                        <App />
+                    </UserProvider>
                 </StorageProvider>
             </BrowserRouter>
         </ConfigProvider>
