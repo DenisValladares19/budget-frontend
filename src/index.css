@@ -5,3 +5,21 @@
 .main-container {
     min-height: calc(100vh - 148px);
 }
+
+.ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {
+    color: rgb(51 65 85 / var(--tw-text-opacity));
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    border: 1px solid rgb(51 65 85 / var(--tw-text-opacity));
+}
+
+.ant-float-btn-primary .ant-float-btn-body {
+    background-color: #393939;
+}
+
+.ant-float-btn-primary .ant-float-btn-body:hover {
+    background-color: #5a5858;
+}
+
+a:hover {
+    color: rgb(51 65 85 / var(--tw-text-opacity));;
+}
