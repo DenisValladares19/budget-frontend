@@ -25,7 +25,7 @@ function useStorage<T = unknown>(key?: string): typeReturn<T> {
 
         keys.forEach((k) => {
             const val = localStorage.getItem(k)
-            result = [...result, { k: JSON.parse(val || '') }]
+            result = [...result, { [k]: JSON.parse(val || '') }]
         })
 
         setStorage(result || [])
