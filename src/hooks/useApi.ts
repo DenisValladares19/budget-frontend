@@ -7,6 +7,7 @@ import {
 } from '@root/interfaces/API'
 import { fetchReducer } from '@root/reducers/fetchReducer'
 import { useReducer } from 'react'
+import useStorage from './useStorage'
 
 export function useApi<T = unknown>(): TypeReturnHook<T> {
     const initialState: StateFetch<T> = {
@@ -19,6 +20,7 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
     }
 
     const [state, dispatch] = useReducer(fetchReducer<T>, initialState)
+    const [token] = useStorage<string>('token')
 
     async function request<M = unknown>(config: ConfigFetch<M>) {
         const baseUrl = `${BASE_URL}${config.url}${getParams(config.params)}`
@@ -30,7 +32,7 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
                     config.method !== 'GET'
                         ? JSON.stringify(config.data)
                         : undefined,
-                headers: getHeader(),
+                headers: getHeader(token),
             })
 
             const result: ResponseDTO<T> = await response.json()
@@ -83,9 +85,12 @@ export function useApi<T = unknown>(): TypeReturnHook<T> {
         return '?' + new URLSearchParams(obj).toString()
     }
 
-    const getHeader = (): Headers => {
+    const getHeader = (token?: string): Headers => {
         const headers = new Headers()
         headers.append('Content-Type', 'application/json')
+        if (token) {
+            headers.append('Authorization', token)
+        }
         return headers
     }
 
