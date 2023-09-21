@@ -1,17 +1,17 @@
-import { useRoutes } from 'react-router-dom'
+import { useNavigate, useRoutes } from 'react-router-dom'
 import { privateRoute, publicRoutes } from './routes'
 import { useApi } from '@hooks/useApi'
 import { UserDTO } from './interfaces/UserDTO'
 import LoadingFullScreen from '@components/LoadingFullScreen'
-import { useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import useUser from '@hooks/useUser'
 
 function App() {
     const publicRoute = useRoutes(publicRoutes)
-    const mainRoute = useRoutes(privateRoute)
     const token = localStorage.getItem('token')
     const [stateUser, fetchUser] = useApi<UserDTO>()
     const { userData, methods } = useUser()
+    const path = localStorage.getItem('path')
 
     useEffect(() => {
         if (!userData.data && token) {
@@ -29,10 +29,24 @@ function App() {
     }
 
     if (userData.data && token) {
-        return mainRoute
+        return <PrivateRoute path={path} />
     }
 
     return publicRoute
+}
+
+const PrivateRoute: FC<{ path: string | null }> = (props) => {
+    const mainRoute = useRoutes(privateRoute)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (location.pathname === '/' && props.path !== '/') {
+            navigate(props.path || '/')
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props?.path])
+
+    return mainRoute
 }
 
 export default App
